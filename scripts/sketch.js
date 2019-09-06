@@ -10,6 +10,7 @@ const w = 960, h = 720;
 
 // board variables
 const tilesize = 40, paddingPct = 0.2;
+const starDensity = 0.15;
 
 /* P5 FUNCTIONS */
 
@@ -17,6 +18,7 @@ function setup() {
 
   canvas = createCanvas(w, h);
   canvas.mousePressed(handleClick);
+  canvas.mouseMoved(handleMouseHover);
 
   board = new Board(w, h);
 
@@ -34,6 +36,10 @@ function handleClick() {
   board.handleClick();
 }
 
+function handleMouseHover() {
+  board.handleMouseHover();
+}
+
 /* END MAIN FUNCTIONS */
 
 
@@ -42,60 +48,111 @@ class Board {
     this.w = w;
     this.h = h;
 
+    this.rowCount = Math.floor(h / tilesize);
+    this.colCount = Math.floor(w / tilesize);
+
     this.tiles = [];
+    this.hoverTile;
 
-    const rows = Math.floor(h / tilesize);
-    const cols = Math.floor(w / tilesize);
+    this._initStartingBoard();
+  }
 
-    // initialize empty tiles
-    for (let r = 0; r < rows; r++) {
-      const row = [...Array(cols).keys()].map(c => new EmptyTile(r, c));
-      this.tiles.push(row);
+  _initStartingBoard() {
+
+    const isEdge = (r, c) => {
+      if (r == 0 || r == this.rowCount - 1)
+        return true;
+      else if (c == 0 || c == this.colCount - 1)
+        return true;
+
+      return false;
+    }
+
+    const wallAdjacent = (r, c) => {
+      if (r == 1 || r == this.rowCount - 2)
+        return true;
+      else if (c == 1 || c == this.colCount - 2)
+        return true;
+
+      return false;
+    }
+
+    const isRandomStar = () => {
+      return Math.random() < starDensity;
+    }
+
+    for (let r = 0; r < this.rowCount; r++) {
+      for (let c = 0; c < this.colCount; c++) {
+
+        let t;
+
+        // stars are automatically placed on the edges of the board
+        // they are also placed randomly throughout the board *as long as they are not adjacent to the edge*
+        if (isEdge(r, c) || !wallAdjacent(r, c) && isRandomStar() )
+          t = new ImmovableObject(this, r, c);
+
+        else
+          t = new EmptyTile(this, r, c);
+
+        this.tiles.push(t);
+      }
     }
 
   }
 
   handleClick() {
-    let r = Math.floor(mouseY / tilesize);
-    let c = Math.floor(mouseX / tilesize);
-
-    let clickedTile = this.tiles[r][c];
-
-    // place player on empty tile on left click
-    if (clickedTile instanceof EmptyTile && mouseButton == LEFT) {
-
-      this.tiles[r][c] = new Player(r, c);
-
-    } else if (clickedTile instanceof EmptyTile && mouseButton == RIGHT) {
-
-      this.tiles[r][c] = new ImmovableObject(r, c);
-
-    } else if (!(clickedTile instanceof EmptyTile) && mouseButton == RIGHT) {
-
-        this.tiles[r][c] = new EmptyTile(r, c);
-
-    }
-
+    let clickedTile = this.getTile(mouseX, mouseY);
+    clickedTile.handleClick();
   }
 
-  draw() {
-    background(155);
+  handleMouseHover() {
 
-    for (let row of this.tiles) {
-      row.forEach(tile => tile.draw());
+    let hoverTile = this.getTile(mouseX, mouseY);
+
+    if (hoverTile != this.hoverTile) {
+      if (this.hoverTile)
+        this.hoverTile.setHover(false);
+
+      this.hoverTile = this.getTile(mouseX, mouseY);
+      hoverTile.setHover(true);
     }
+  }
+
+  draw(color=155) {
+    background(color);
+
+    this.tiles.forEach(tile => tile.draw());
+  }
+
+  setTile(r, c, newTile) {
+    this.tiles[this.indexOf(r, c)] = newTile;
   }
 
   getTile(x, y) {
     let r = Math.floor(y / tilesize);
     let c = Math.floor(x / tilesize);
 
-    return this.tiles[r][c];
+    if (r < 0)
+      r = 0;
+    else if (r >= this.rowCount)
+      r = this.rowCount - 1;
+
+    if (c < 0)
+      c = 0;
+    else if (c >= this.colCount)
+      c = this.colCount - 1;
+
+    return this.tiles[this.indexOf(r, c)];
+  }
+
+  indexOf(r, c) {
+    return r * this.colCount + c;
   }
 }
 
 class BoardObject {
-  constructor(r, c) {
+  constructor(board, r, c) {
+    this.board = board;
     this.r = r;
     this.c = c;
     this.tilesize = tilesize;
@@ -103,18 +160,38 @@ class BoardObject {
     this.padding = paddingPct * tilesize;
   }
 
-  handleClick() { }
-  draw() { }
-  onHover() { }
+  handleClick() {  }
+  setHover(hover) { this.hover = hover; }
+  draw() {  }
 }
 
 class EmptyTile extends BoardObject {
-  constructor(r, c) {
-    super(r, c);
+  constructor(board, r, c) {
+    super(board, r, c);
+  }
+
+  handleClick() {
+
+    if (mouseButton == LEFT)
+      this.board.setTile(this.r, this.c, new Player(this.board, this.r, this.c));
+
+    else if (mouseButton == RIGHT)
+      this.board.setTile(this.r, this.c, new ImmovableObject(this.board, this.r, this.c));
+
   }
 
   draw(color=255) {
-    stroke(color);
+
+    push();
+
+    if (this.hover) {
+      stroke('rgb(255,255,0)');
+      strokeWeight(3);
+
+    } else {
+      stroke(color);
+
+    }
 
     let lineLength = this.padding * 0.5;
 
@@ -143,46 +220,74 @@ class EmptyTile extends BoardObject {
     // draw vertex in bottom right
     line(botRightX, botY, botRightX, botY - lineLength);
     line(botRightX, botY, botRightX - lineLength, botY);
+
+    pop();
   }
 
 }
 
 class Player extends BoardObject {
-  constructor(r, c) {
-    super(r, c);
+  constructor(board, r, c, color='rgb(255, 0, 0)') {
+    super(board, r, c);
+
+    this.color = color;
+  }
+
+  handleClick() {
+
+    if (mouseButton == RIGHT)
+      this.board.setTile(this.r, this.c, new EmptyTile(this.board, this.r, this.c));
+
   }
 
   draw(color='rgb(255, 0, 0)') {
+
+    push();
+
     rectMode(CENTER);
-    fill(color);
-    stroke(color);
+    fill(this.color);
+    stroke(this.color);
 
     // get tile center
-    let centerX = this.c * this.tilesize + this.tilesize / 2;
-    let centerY = this.r * this.tilesize + this.tilesize / 2;
+    let centerX = this.c * this.tilesize + this.tilesize * 0.5;
+    let centerY = this.r * this.tilesize + this.tilesize * 0.5;
 
     // let actualSize = this.tilesize - this.padding * 2;
     let d = this.tilesize - this.padding * 2;
 
     circle(centerX, centerY, d);
+
+    pop();
   }
 
 }
 
 class ImmovableObject extends BoardObject {
-  constructor(r, c) {
-    super(r, c);
+  constructor(board, r, c) {
+    super(board, r, c);
   }
 
-  draw(color=50) {
+  handleClick() {
+
+    // if (mouseButton == RIGHT)
+      // this.board.setTile(this.r, this.c, new EmptyTile(this.board, this.r, this.c));
+
+  }
+
+  draw(color=60) {
+
+    push();
+
     rectMode(CENTER);
     fill(color);
-    stroke(color * 2);
+    stroke(color * 1.5);
 
     // get tile center
-    let centerX = this.c * this.tilesize + this.tilesize / 2;
-    let centerY = this.r * this.tilesize + this.tilesize / 2;
+    let centerX = this.c * this.tilesize + this.tilesize * 0.5;
+    let centerY = this.r * this.tilesize + this.tilesize * 0.5;
 
     rect(centerX, centerY, this.tilesize, this.tilesize);
+
+    pop();
   }
 }
