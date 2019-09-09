@@ -14,6 +14,7 @@ class Board {
     this.tiles = [];
 
     this.teamRGBs = game.teamRGBs.slice(0, this.numTeams);
+    this.turn = new Turn(this.teamRGBs);
 
     this._initBoard();
     this._initPlayers();

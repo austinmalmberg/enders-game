@@ -5,7 +5,7 @@ class BaseTile extends OpenTile {
     this.teamRGB = teamRGB;
   }
 
-  draw(color='rgba(255,0,0,0.3)') {
+  draw() {
 
     // remove frozen players to prevent them from impeding win condition
     if (this.player && this.player.frozen)

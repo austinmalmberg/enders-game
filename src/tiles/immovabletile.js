@@ -7,13 +7,13 @@ class ImmovableTile extends AbstractTile {
     /* DO NOTHING */
   }
 
-  draw(color=90) {
+  draw() {
 
     push();
 
     rectMode(CENTER);
-    fill(color);
-    stroke(color / 1.5);
+    fill(90);
+    stroke(90 / 1.5);
 
     rect(...this.getTileCenter(), this.board.tilesize, this.board.tilesize);
 

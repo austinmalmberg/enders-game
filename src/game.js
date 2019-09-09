@@ -60,8 +60,8 @@ class Game {
     this.board.handleMouseHover();
   }
 
-  draw(color=155) {
-    background(color);
+  draw() {
+    background(155);
 
     this.board.draw();
   }

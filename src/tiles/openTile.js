@@ -2,7 +2,7 @@ class OpenTile extends AbstractTile {
   constructor(board, r, c) {
     super(board, r, c);
 
-    this.highlightColor = 'rgb(255,255,0)';
+    this.highlightColorRGB = [255, 255, 0];
   }
 
   handleClick() {
@@ -22,7 +22,7 @@ class OpenTile extends AbstractTile {
 
   }
 
-  draw(color=255) {
+  draw() {
 
     if (this.player)
       this.player.draw();
@@ -32,10 +32,10 @@ class OpenTile extends AbstractTile {
       push();
 
       if (this.hover) {
-        stroke(this.highlightColor);
+        stroke(Colors.getP5Notation(this.highlightColorRGB));
         strokeWeight(2);
       } else {
-        stroke(color);
+        stroke(255);
       }
 
       const lineLength = this.padding * 0.5;

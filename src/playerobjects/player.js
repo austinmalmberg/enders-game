@@ -11,7 +11,7 @@ class Player {
     return this.playerColor;
   }
 
-  draw(color=0) {
+  draw() {
 
     push();
 
