@@ -1,15 +1,15 @@
 class EmptyTile extends AbstractTile {
-  constructor(board, r, c) {
-    super(board, r, c);
+  constructor(game, r, c) {
+    super(game, r, c);
   }
 
   handleClick() {
 
     if (mouseButton == LEFT)
-      this.board.setTile(this.r, this.c, new Player(this.board, this.r, this.c));
+      this.game.setPlayer(this.r, this.c);
 
     else if (mouseButton == RIGHT)
-      this.board.setTile(this.r, this.c, new ImmovableTile(this.board, this.r, this.c));
+      this.game.setImmovableTile(this.r, this.c);
 
   }
 

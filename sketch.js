@@ -8,10 +8,6 @@
 let game, canvas;
 const w = 960, h = 720;
 
-// game variables
-const tilesize = 40, paddingPct = 0.2;
-const starDensity = 0.15;
-
 /* P5 FUNCTIONS */
 
 function setup() {
@@ -24,7 +20,7 @@ function setup() {
 
   canvas.parent('canvas-container');
 
-  // disable the right click menu when pressed within the canvas
+  // disable the right click menu within the canvas
   canvas.canvas.oncontextmenu = () => false;
 }
 

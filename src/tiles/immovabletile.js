@@ -1,13 +1,13 @@
 class ImmovableTile extends AbstractTile {
-  constructor(board, r, c) {
-    super(board, r, c);
+  constructor(game, r, c) {
+    super(game, r, c);
   }
 
   handleClick() {
 
     // remove tile
     // if (mouseButton == RIGHT)
-      // this.board.setTile(this.r, this.c, new EmptyTile(this.board, this.r, this.c));
+      // this.game.setEmptyTile(this.r, this.c);
 
   }
 
