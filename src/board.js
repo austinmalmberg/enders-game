@@ -13,7 +13,10 @@ class Board {
 
     this.tiles = [];
 
+    this.teamRGBs = game.teamRGBs.slice(0, this.numTeams);
+
     this._initBoard();
+    this._initPlayers();
   }
 
   _initBoard() {
@@ -36,7 +39,7 @@ class Board {
       return false;
     };
 
-    const isBaseCol = (r, c) => {
+    const isBaseCoord = (r, c) => {
       return r == 0 && c == this.colCount - 1 - this.baseCol ||
         r == this.rowCount - 1 && c == this.baseCol;
     };
@@ -45,21 +48,31 @@ class Board {
       return Math.random() < this.game.starDensity;
     };
 
+    let team = 0;
+
     // Immovable tiles are placed on edges as walls, and randomly throughout board aka "stars"
     for (let r = 0; r < this.rowCount; r++) {
       for (let c = 0; c < this.colCount; c++) {
 
         let t;
 
-        if (isEdge(r, c) && !isBaseCol(r, c) || !adjacentWall(r, c) && isRandomStar())
+        if (isBaseCoord(r, c)) {
+          t = new BaseTile(this, r, c, this.teamRGBs[team++]);
+
+
+        } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
           t = new ImmovableTile(this, r, c);
 
         else
-          t = new EmptyTile(this, r, c);
+          t = new OpenTile(this, r, c);
 
         this.tiles.push(t);
       }
     }
+  }
+
+  _initPlayers() {
+
   }
 
   handleClick() {
@@ -88,16 +101,16 @@ class Board {
     this.tiles[this.indexOf(r, c)] = newTile;
   }
 
-  setPlayer(r, c) {
-    this.setTile(r, c, new PlayerTile(this, r, c));
+  setPlayer(r, c, player) {
+    this.getTile(r, c).setPlayer(player);
   }
 
   setImmovableTile(r, c) {
     this.setTile(r, c, new ImmovableTile(this, r, c));
   }
 
-  setEmptyTile(r, c) {
-    this.setTile(r, c, new EmptyTile(this, r, c));
+  setOpenTile(r, c) {
+    this.setTile(r, c, new OpenTile(this, r, c));
   }
 
   getTile(x, y) {

@@ -6,15 +6,15 @@
 // TODO: Shooting attributes (rate of fire, vision cone / accuracy)
 
 let game, canvas;
-const w = 960, h = 720;
+const dims = [ 960, 720 ];
 
 /* P5 FUNCTIONS */
 
 function setup() {
 
-  game = new Game(w, h);
+  game = new Game(dims);
 
-  canvas = createCanvas(w, h);
+  canvas = createCanvas(...dims);
   canvas.mousePressed(handleClick);
   canvas.mouseMoved(handleMouseHover);
 

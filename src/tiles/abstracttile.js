@@ -1,18 +1,18 @@
 class AbstractTile {
-  constructor(game, r, c) {
-    this.game = game;
+  constructor(board, r, c) {
+    this.board = board;
     this.r = r;
     this.c = c;
-    this.tilesize = game.tilesize;
-    this.paddingPct = game.paddingPct;
-    this.padding = game.paddingPct * this.tilesize;
+    this.paddingPct = board.paddingPct;
+    this.padding = board.paddingPct * board.tilesize;
+    this.player = null;
   }
 
   setMouseHover(hover) { this.hover = hover; }
-  
+
   getTileCenter() {
-    const x = this.c * this.tilesize + this.tilesize * 0.5;
-    const y = this.r * this.tilesize + this.tilesize * 0.5;
+    const x = this.c * this.board.tilesize + this.board.tilesize * 0.5;
+    const y = this.r * this.board.tilesize + this.board.tilesize * 0.5;
 
     return [x, y];
   }

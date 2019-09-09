@@ -1,14 +1,10 @@
 class ImmovableTile extends AbstractTile {
-  constructor(game, r, c) {
-    super(game, r, c);
+  constructor(board, r, c) {
+    super(board, r, c);
   }
 
   handleClick() {
-
-    // remove tile
-    // if (mouseButton == RIGHT)
-      // this.game.setEmptyTile(this.r, this.c);
-
+    /* DO NOTHING */
   }
 
   draw(color=90) {
@@ -19,7 +15,7 @@ class ImmovableTile extends AbstractTile {
     fill(color);
     stroke(color / 1.5);
 
-    rect(...this.getTileCenter(), this.tilesize, this.tilesize);
+    rect(...this.getTileCenter(), this.board.tilesize, this.board.tilesize);
 
     pop();
   }
