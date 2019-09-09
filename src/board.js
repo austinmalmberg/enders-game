@@ -13,8 +13,11 @@ class Board {
 
     this.tiles = [];
 
-    this.teamRGBs = game.teamRGBs.slice(0, this.numTeams);
+    this.teamRGBs = game.teamRGBs.slice(0, this.numTeams);  // redundant; Turn class stores this information
     this.turn = new Turn(this.teamRGBs);
+    this.activePlayers = [];
+
+    this.mode = 'place';
 
     this._initBoard();
     this._initPlayers();
@@ -60,12 +63,13 @@ class Board {
         if (isBaseCoord(r, c)) {
           t = new BaseTile(this, r, c, this.teamRGBs[team++]);
 
-
-        } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
+        } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar()) {
           t = new ImmovableTile(this, r, c);
 
-        else
+        } else {
           t = new OpenTile(this, r, c);
+
+        }
 
         this.tiles.push(t);
       }
@@ -78,7 +82,39 @@ class Board {
 
   handleClick() {
     const clickedTile = this.getTile(mouseX, mouseY);
-    clickedTile.handleClick();
+
+    if (this.mode === 'place') {
+
+      if (clickedTile instanceof OpenTile) {
+
+        if (mouseButton === LEFT && !clickedTile.player) {
+          const player = new Player(this, clickedTile, this.turn.get());
+
+          this.activePlayers.push(player);
+          clickedTile.setPlayer(player);
+
+        } else if (mouseButton === RIGHT && clickedTile.player) {
+          this.activePlayers = this.activePlayers.filter(p => p != clickedTile.player);
+          clickedTile.setPlayer(null);
+        }
+
+      }
+
+      if (this.activePlayers.length === this.game.numTeams * this.game.membersPerTeam) {
+        this.mode = 'play';
+
+      } else if (this.activePlayers.length % this.game.membersPerTeam === 0) {
+        this.turn.next();
+        
+      }
+    }
+  }
+
+  getActivePlayers(teamRGB) {
+    if (!teamRGB)
+      return this.activePlayers;
+
+    return this.activePlayer.filter(p => p.teamRGB == teamRGB);
   }
 
   handleMouseHover() {
@@ -99,11 +135,7 @@ class Board {
   }
 
   setTile(r, c, newTile) {
-    this.tiles[this.indexOf(r, c)] = newTile;
-  }
-
-  setPlayer(r, c, player) {
-    this.getTile(r, c).setPlayer(player);
+    this.tiles[this._indexOf(r, c)] = newTile;
   }
 
   setImmovableTile(r, c) {
@@ -129,10 +161,10 @@ class Board {
     else if (c >= this.colCount)
       c = this.colCount - 1;
 
-    return this.tiles[this.indexOf(r, c)];
+    return this.tiles[this._indexOf(r, c)];
   }
 
-  indexOf(r, c) {
+  _indexOf(r, c) {
     return r * this.colCount + c;
   }
 }

@@ -20,4 +20,5 @@ class AbstractTile {
   // abstract methods
   handleClick() {  }
   draw() {  }
+  setPlayer() {  }
 }

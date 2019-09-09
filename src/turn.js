@@ -13,4 +13,8 @@ class Turn {
 
     return this.get();
   }
+
+  players() {
+    return this.teamRGBs.length;
+  }
 }

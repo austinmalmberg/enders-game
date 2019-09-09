@@ -1,14 +1,11 @@
 class Player {
-  constructor(tile, playerColor='rgb(255, 0, 0)') {
+  constructor(board, tile, teamRGB) {
+    this.board = board;
     this.tile = tile;
-    this.playerColor = playerColor;
+    this.teamRGB = teamRGB;
 
-    this.frozen = true;
-    this.frozenColor = 'rgba(102, 178, 255, 0.6)';
-  }
-
-  getTeam() {
-    return this.playerColor;
+    this.frozen = false;
+    this.frozenColor = [102, 178, 255, 0.6];
   }
 
   draw() {
@@ -16,10 +13,10 @@ class Player {
     push();
 
     // draw player
-    fill(this.playerColor);
-    stroke(this.playerColor);
+    fill(this.teamRGB);
+    stroke(this.teamRGB);
 
-    const d = this.tile.board.tilesize - this.tile.padding * 2;
+    const d = this.board.tilesize - this.tile.padding * 2;
 
     circle(...this.tile.getTileCenter(), d);
 
@@ -31,7 +28,7 @@ class Player {
 
       rectMode(CENTER);
 
-      rect(...this.tile.getTileCenter(), this.tile.board.tilesize, this.tile.board.tilesize);
+      rect(...this.tile.getTileCenter(), this.board.tilesize, this.board.tilesize);
 
     }
 
