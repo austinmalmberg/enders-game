@@ -5,10 +5,10 @@
 // TODO: Shooting
 // TODO: Shooting attributes (rate of fire, vision cone / accuracy)
 
-let canvas, board;
+let game, canvas;
 const w = 960, h = 720;
 
-// board variables
+// game variables
 const tilesize = 40, paddingPct = 0.2;
 const starDensity = 0.15;
 
@@ -16,11 +16,11 @@ const starDensity = 0.15;
 
 function setup() {
 
+  game = new Game(w, h);
+
   canvas = createCanvas(w, h);
   canvas.mousePressed(handleClick);
   canvas.mouseMoved(handleMouseHover);
-
-  board = new Board(w, h);
 
   canvas.parent('canvas-container');
 
@@ -29,13 +29,13 @@ function setup() {
 }
 
 function draw() {
-  board.draw();
+  game.draw();
 }
 
 function handleClick() {
-  board.handleClick();
+  game.handleClick();
 }
 
 function handleMouseHover() {
-  board.handleMouseHover();
+  game.handleMouseHover();
 }
