@@ -45,24 +45,36 @@ class Game {
         [0, 255, 0],    // green
         [255, 255, 0]   // yellow
       ];
+    this.teams = this.teamRGBs.map((rgb, i) => {
+      return {
+        id: i,
+        'rgb': rgb
+      };
+    });
 
     this.membersPerTeam = 6;
     this.starDensity = 0.15;
 
     this.board = new Board(this);
+
+    // this.player = new Player(this.board.tilesize * 0.6, this.teams[0]);
   }
 
   handleClick() {
-    this.board.handleClick();
+
   }
 
   handleMouseHover() {
-    this.board.handleMouseHover();
+
   }
 
   draw() {
     background(155);
 
+    this.board.update();
     this.board.draw();
+
+    // this.player.update();
+    // this.player.draw();
   }
 }

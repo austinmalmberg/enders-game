@@ -5,22 +5,14 @@ class Board {
     this.rowCount = 18;
     this.colCount = 24;
 
+    // the number of tiles from the left and right walls
     this.baseCol = 4;
 
     this.tilesize = game.h / this.rowCount;
 
-    this.paddingPct = 0.2;
-
     this.tiles = [];
 
-    this.teamRGBs = game.teamRGBs.slice(0, this.numTeams);  // redundant; Turn class stores this information
-    this.turn = new Turn(this.teamRGBs);
-    this.activePlayers = [];
-
-    this.mode = 'place';
-
     this._initBoard();
-    this._initPlayers();
   }
 
   _initBoard() {
@@ -60,97 +52,48 @@ class Board {
 
         let t;
 
-        if (isBaseCoord(r, c)) {
-          t = new BaseTile(this, r, c, this.teamRGBs[team++]);
+        if (isBaseCoord(r, c))
+          t = new BaseTile(this.tilesize, c * this.tilesize, r * this.tilesize, this.game.teams[team++]);
+        else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
+          t = new ImmovableTile(this.tilesize, c * this.tilesize, r * this.tilesize);
 
-        } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar()) {
-          t = new ImmovableTile(this, r, c);
-
-        } else {
-          t = new OpenTile(this, r, c);
-
-        }
-
-        this.tiles.push(t);
+        if (t)
+          this.tiles.push(t);
       }
     }
-  }
-
-  _initPlayers() {
-
   }
 
   handleClick() {
     const clickedTile = this.getTile(mouseX, mouseY);
 
-    if (this.mode === 'place') {
-
-      if (clickedTile instanceof OpenTile) {
-
-        if (mouseButton === LEFT && !clickedTile.player) {
-          const player = new Player(this, clickedTile, this.turn.get());
-
-          this.activePlayers.push(player);
-          clickedTile.setPlayer(player);
-
-        } else if (mouseButton === RIGHT && clickedTile.player) {
-          this.activePlayers = this.activePlayers.filter(p => p != clickedTile.player);
-          clickedTile.setPlayer(null);
-        }
-
-      }
-
-      if (this.activePlayers.length === this.game.numTeams * this.game.membersPerTeam) {
-        this.mode = 'play';
-
-      } else if (this.activePlayers.length % this.game.membersPerTeam === 0) {
-        this.turn.next();
-        
-      }
-    }
-  }
-
-  getActivePlayers(teamRGB) {
-    if (!teamRGB)
-      return this.activePlayers;
-
-    return this.activePlayer.filter(p => p.teamRGB == teamRGB);
+    if (clickedTile)
+      clickedTile.handleClick();
   }
 
   handleMouseHover() {
 
-    const tile = this.getTile(mouseX, mouseY);
+    const t = this.getTile(mouseX, mouseY);
 
-    if (tile != this.hoverTile) {
-      if (this.hoverTile)
-        this.hoverTile.setMouseHover(false);
+    if (this.lastHovered)
+      this.lastHovered.setMouseHover(false);
 
-      this.hoverTile = this.getTile(mouseX, mouseY);
-      this.hoverTile.setMouseHover(true);
-    }
+    this.lastHovered = t;
+
+    if (this.lastHovered)
+      this.lastHovered.setMouseHover(true);
   }
+
+  update() {  }
 
   draw() {
     this.tiles.forEach(tile => tile.draw());
-  }
-
-  setTile(r, c, newTile) {
-    this.tiles[this._indexOf(r, c)] = newTile;
-  }
-
-  setImmovableTile(r, c) {
-    this.setTile(r, c, new ImmovableTile(this, r, c));
-  }
-
-  setOpenTile(r, c) {
-    this.setTile(r, c, new OpenTile(this, r, c));
   }
 
   getTile(x, y) {
     let r = Math.floor(y / this.tilesize);
     let c = Math.floor(x / this.tilesize);
 
-    // corrects errors that occur for mouse movements near the canvas bounds
+    // correct errors for mouse movements near the edge of the canvas
     if (r < 0)
       r = 0;
     else if (r >= this.rowCount)
@@ -161,10 +104,12 @@ class Board {
     else if (c >= this.colCount)
       c = this.colCount - 1;
 
-    return this.tiles[this._indexOf(r, c)];
-  }
+    // return the tile with matching r & c values
+    for (let tile of this.tiles) {
+      if (tile.r == r && tile.c == c)
+        return tile;
+    }
 
-  _indexOf(r, c) {
-    return r * this.colCount + c;
+    return null;
   }
 }
