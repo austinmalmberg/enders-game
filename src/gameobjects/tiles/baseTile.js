@@ -16,7 +16,7 @@ class BaseTile extends AbstractTile {
     stroke(c);
 
     rectMode(CENTER);
-    rect(...this.center(), this.tilesize, this.tilesize);
+    rect(...this.center(), this.tilesize.w, this.tilesize.h);
 
     pop();
 

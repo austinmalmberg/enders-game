@@ -20,7 +20,7 @@ class ImmovableTile extends AbstractTile {
     // else
     //   stroke(90 / 1.5);
 
-    rect(...this.center(), this.tilesize, this.tilesize);
+    rect(...this.center(), this.tilesize.w, this.tilesize.h);
 
     pop();
   }

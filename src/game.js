@@ -57,7 +57,7 @@ class Game {
 
     this.board = new Board(this);
 
-    // this.player = new Player(this.board.tilesize * 0.6, this.teams[0]);
+    this.player = new Player(Math.min(this.board.tilesize.w, this.board.tilesize.h) * 0.6, this.teams[0]);
   }
 
   handleClick() {

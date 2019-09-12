@@ -8,7 +8,10 @@ class Board {
     // the number of tiles from the left and right walls
     this.baseCol = 4;
 
-    this.tilesize = game.h / this.rowCount;
+    this.tilesize = {
+      h: game.h / this.rowCount,
+      w: game.w / this.colCount
+    };
 
     this.tiles = [];
 
@@ -53,9 +56,9 @@ class Board {
         let t;
 
         if (isBaseCoord(r, c))
-          t = new BaseTile(this.tilesize, c * this.tilesize, r * this.tilesize, this.game.teams[team++]);
+          t = new BaseTile(this.tilesize, c * this.tilesize.w, r * this.tilesize.h, this.game.teams[team++]);
         else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
-          t = new ImmovableTile(this.tilesize, c * this.tilesize, r * this.tilesize);
+          t = new ImmovableTile(this.tilesize, c * this.tilesize.w, r * this.tilesize.h);
 
         if (t)
           this.tiles.push(t);
