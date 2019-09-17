@@ -3,6 +3,10 @@ class ImmovableTile extends AbstractTile {
     super(tilesize, pos);
   }
 
+  handleClick() {
+    console.log(this);
+  }
+
   draw() {
 
     push();
@@ -11,12 +15,8 @@ class ImmovableTile extends AbstractTile {
     fill(90);
     noStroke();
 
-    // if (this.hover)
-    //   stroke(255);
-    // else
-    //   stroke(90 / 1.5);
-
-    rect(this.center.x, this.center.y, this.tilesize.w, this.tilesize.h);
+    const center = this.getCenter();
+    rect(center.x, center.y, this.tilesize.w, this.tilesize.h);
 
     pop();
   }

@@ -1,26 +1,22 @@
-class Player extends GameObject {
+class Player extends MoveableGameObject {
   constructor(pos, board, team) {
+    this.maxDv = 3;
+
     super(pos);
 
-    this.diameter = Math.min(board.tilesize.w, board.tilesize.h) * 0.6;
+    this.radius = Math.min(board.tilesize.w, board.tilesize.h) * 0.6 * 0.5;
     this.team = team;
 
     this.frozen = false;
     this.frozenColor = [102, 178, 255, 0.6];
   }
 
-  clicked() {
-    if (mouseX < this.pos.x - this.diameter * 0.5 || mouseX > this.pos.x + this.diameter * 0.5)
-      return false;
-
-    if (mouseY < this.pos.y - this.diameter * 0.5 || mouseY > this.pos.y + this.diameter * 0.5)
-      return false;
-
-    return true;
+  moveTo(x, y) {
+    const fr = getFrameRate();
   }
 
-  update() {
-    this.pos.x += 1;
+  clicked() {
+    return dist(mouseX, mouseY, this.pos.x, this.pos.y) <= this.radius;
   }
 
   draw() {
@@ -31,7 +27,7 @@ class Player extends GameObject {
     fill(this.team.rgb);
     stroke(this.team.rgb);
 
-    circle(this.pos.x, this.pos.y, this.diameter);
+    circle(this.pos.x, this.pos.y, this.radius * 2);
 
     // draw if frozen
     if (this.frozen) {
@@ -41,7 +37,7 @@ class Player extends GameObject {
 
       rectMode(CENTER);
 
-      rect(this.pos.x, this.pos.y, this.diameter, this.diameter);
+      rect(this.pos.x, this.pos.y, this.radius * 2, this.radius * 2);
 
     }
 

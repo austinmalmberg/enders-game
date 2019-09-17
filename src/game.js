@@ -46,9 +46,8 @@ class Game {
         [255, 255, 0]   // yellow
       ];
     this.teams = this.teamRGBs.slice(0, this.numTeams).map((rgb, i) => new Team(i, rgb));
-    this.team1 = this.teams[0];
-
     this.membersPerTeam = 6;
+
     this.starDensity = 0.15;
 
     this.board = new Board(this);
@@ -59,7 +58,7 @@ class Game {
 
   _initPlayers() {
     this.board.getBases().forEach(base => {
-      const player = new Player(base.center, this.board, base.team);
+      const player = new Player(base.getCenter(), this.board, base.team);
       this.players.push(player);
     });
   }
@@ -72,7 +71,14 @@ class Game {
       }
     }
 
-    this.board.handleClick();
+    for (let tile of this.board.getTiles()) {
+      if (tile.clicked()) {
+        tile.handleClick();
+        return;
+      }
+    }
+
+    this.players[0].moveTo(mouseX, mouseY);
   }
 
   handleMouseHover() {
@@ -90,5 +96,9 @@ class Game {
 
     // team players
     this.players.forEach(player => player.draw());
+  }
+
+  getTeams() {
+    return this.teams;
   }
 }

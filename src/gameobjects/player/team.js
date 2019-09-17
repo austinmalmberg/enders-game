@@ -1,10 +1,6 @@
 class Team {
-  constructor(id, rgb, players) {
+  constructor(id, rgb) {
     this.id = id;
     this.rgb = rgb;
-  }
-
-  draw() {
-
   }
 }
