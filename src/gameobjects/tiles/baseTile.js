@@ -1,6 +1,6 @@
 class BaseTile extends AbstractTile {
-  constructor(tilesize, r, c, team) {
-    super(tilesize, r, c);
+  constructor(tilesize, pos, team) {
+    super(tilesize, pos);
 
     this.team = team;
   }
@@ -16,7 +16,7 @@ class BaseTile extends AbstractTile {
     stroke(c);
 
     rectMode(CENTER);
-    rect(...this.center(), this.tilesize.w, this.tilesize.h);
+    rect(this.center.x, this.center.y, this.tilesize.w, this.tilesize.h);
 
     pop();
 

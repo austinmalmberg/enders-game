@@ -1,11 +1,13 @@
 class GameObject {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+  constructor(pos) {
+    this.pos = pos;
   }
 
-  // overridable functions
-  handleClick() {  }
+  // overrideable functions
+  clicked() {  }
+  handleClick() {
+    console.log(this);
+  }
   handleMouseHover() {  }
   update() {  }
   draw() {  }

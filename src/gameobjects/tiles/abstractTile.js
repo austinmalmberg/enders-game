@@ -1,20 +1,28 @@
 class AbstractTile extends GameObject {
-  constructor(tilesize, x, y) {
-    super()
+  constructor(tilesize, pos) {
+    super(pos);
 
     this.tilesize = tilesize;
-    this.x = x;
-    this.y = y;
+
+    this.topLeft = pos;
+    this.topRight = createVector(this.pos.x + this.tilesize.w, this.pos.y);
+    this.bottomLeft = createVector(this.pos.x, this.pos.y + this.tilesize.h);
+    this.bottomRight = createVector(this.pos.x + this.tilesize.w, this.pos.y + this.tilesize.h);
+
+    this.center = createVector(this.pos.x + this.tilesize.w * 0.5, this.pos.y + this.tilesize.h * 0.5);
   }
 
-  center() { return [this.x + this.tilesize.w * 0.5, this.y + this.tilesize.h * 0.5]; }
-  topLeft() { return [this.x, this.y]; }
-  topRight() { return [this.x + this.tilesize.w, this.y]; }
-  bottomLeft() { return [this.x, this.y + this.tilesize.h]; }
-  bottomRight() { return [this.x + this.tilesize.w, this.y + this.tilesize.h]; }
+  clicked() {
+    if (mouseX < this.topLeft.x || mouseX > this.topRight.x)
+      return false;
+
+    if (mouseY < this.topLeft.y || mouseY > this.bottomLeft.y)
+      return false;
+
+    return true;
+  }
 
   // abstract methods
-  handleClick() {  }
   handleMouseHover() {  }
   draw() {  }
   setPlayer() {  }

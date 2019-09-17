@@ -45,36 +45,50 @@ class Game {
         [0, 255, 0],    // green
         [255, 255, 0]   // yellow
       ];
-    this.teams = this.teamRGBs.map((rgb, i) => {
-      return {
-        id: i,
-        'rgb': rgb
-      };
-    });
+    this.teams = this.teamRGBs.slice(0, this.numTeams).map((rgb, i) => new Team(i, rgb));
+    this.team1 = this.teams[0];
 
     this.membersPerTeam = 6;
     this.starDensity = 0.15;
 
     this.board = new Board(this);
 
-    this.player = new Player(Math.min(this.board.tilesize.w, this.board.tilesize.h) * 0.6, this.teams[0]);
+    this.players = [];
+    this._initPlayers();
+  }
+
+  _initPlayers() {
+    this.board.getBases().forEach(base => {
+      const player = new Player(base.center, this.board, base.team);
+      this.players.push(player);
+    });
   }
 
   handleClick() {
+    for (let player of this.players) {
+      if (player.clicked()) {
+        player.handleClick();
+        return;
+      }
+    }
 
+    this.board.handleClick();
   }
 
   handleMouseHover() {
 
   }
 
+  update() {
+    this.players.forEach(player => player.update());
+  }
+
   draw() {
     background(155);
 
-    this.board.update();
     this.board.draw();
 
-    // this.player.update();
-    // this.player.draw();
+    // team players
+    this.players.forEach(player => player.draw());
   }
 }

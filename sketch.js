@@ -25,6 +25,7 @@ function setup() {
 }
 
 function draw() {
+  game.update();
   game.draw();
 }
 

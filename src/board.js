@@ -5,7 +5,7 @@ class Board {
     this.rowCount = 18;
     this.colCount = 24;
 
-    // the number of tiles from the left and right walls
+    // the index at which to add a base
     this.baseCol = 4;
 
     this.tilesize = {
@@ -14,11 +14,10 @@ class Board {
     };
 
     this.tiles = [];
-
-    this._initBoard();
+    this._initTiles();
   }
 
-  _initBoard() {
+  _initTiles() {
 
     const isEdge = (r, c) => {
       if (r == 0 || r == this.rowCount - 1)
@@ -39,7 +38,7 @@ class Board {
     };
 
     const isBaseCoord = (r, c) => {
-      return r == 0 && c == this.colCount - 1 - this.baseCol ||
+      return r == 0 && c == (this.colCount - 1) - this.baseCol ||
         r == this.rowCount - 1 && c == this.baseCol;
     };
 
@@ -54,11 +53,12 @@ class Board {
       for (let c = 0; c < this.colCount; c++) {
 
         let t;
+        let pos = createVector(c * this.tilesize.w, r * this.tilesize.h);
 
-        if (isBaseCoord(r, c))
-          t = new BaseTile(this.tilesize, c * this.tilesize.w, r * this.tilesize.h, this.game.teams[team++]);
-        else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
-          t = new ImmovableTile(this.tilesize, c * this.tilesize.w, r * this.tilesize.h);
+        if (isBaseCoord(r, c)) {
+          t = new BaseTile(this.tilesize, pos, this.game.teams[team++]);
+        } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
+          t = new ImmovableTile(this.tilesize, pos);
 
         if (t)
           this.tiles.push(t);
@@ -67,52 +67,19 @@ class Board {
   }
 
   handleClick() {
-    const clickedTile = this.getTile(mouseX, mouseY);
-
-    if (clickedTile)
-      clickedTile.handleClick();
+    for (let tile of this.tiles) {
+      if (tile.clicked()) {
+        tile.handleClick();
+        return;
+      }
+    }
   }
-
-  handleMouseHover() {
-
-    const t = this.getTile(mouseX, mouseY);
-
-    if (this.lastHovered)
-      this.lastHovered.setMouseHover(false);
-
-    this.lastHovered = t;
-
-    if (this.lastHovered)
-      this.lastHovered.setMouseHover(true);
-  }
-
-  update() {  }
 
   draw() {
     this.tiles.forEach(tile => tile.draw());
   }
 
-  getTile(x, y) {
-    let r = Math.floor(y / this.tilesize);
-    let c = Math.floor(x / this.tilesize);
-
-    // correct errors for mouse movements near the edge of the canvas
-    if (r < 0)
-      r = 0;
-    else if (r >= this.rowCount)
-      r = this.rowCount - 1;
-
-    if (c < 0)
-      c = 0;
-    else if (c >= this.colCount)
-      c = this.colCount - 1;
-
-    // return the tile with matching r & c values
-    for (let tile of this.tiles) {
-      if (tile.r == r && tile.c == c)
-        return tile;
-    }
-
-    return null;
+  getBases() {
+    return this.tiles.filter(tile => tile instanceof BaseTile);
   }
 }

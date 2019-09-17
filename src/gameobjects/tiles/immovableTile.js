@@ -1,10 +1,6 @@
 class ImmovableTile extends AbstractTile {
-  constructor(tilesize, r, c) {
-    super(tilesize, r, c);
-  }
-
-  handleClick() {
-    /* DO NOTHING */
+  constructor(tilesize, pos) {
+    super(tilesize, pos);
   }
 
   draw() {
@@ -20,7 +16,7 @@ class ImmovableTile extends AbstractTile {
     // else
     //   stroke(90 / 1.5);
 
-    rect(...this.center(), this.tilesize.w, this.tilesize.h);
+    rect(this.center.x, this.center.y, this.tilesize.w, this.tilesize.h);
 
     pop();
   }
