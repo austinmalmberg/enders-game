@@ -1,7 +1,5 @@
 class Player extends MoveableGameObject {
   constructor(pos, board, team) {
-    this.maxDv = 3;
-
     super(pos);
 
     this.radius = Math.min(board.tilesize.w, board.tilesize.h) * 0.6 * 0.5;
@@ -11,12 +9,12 @@ class Player extends MoveableGameObject {
     this.frozenColor = [102, 178, 255, 0.6];
   }
 
-  moveTo(x, y) {
-    const fr = getFrameRate();
-  }
-
   clicked() {
     return dist(mouseX, mouseY, this.pos.x, this.pos.y) <= this.radius;
+  }
+
+  handleClick() {
+    this.moveTo(mouseX, mouseY);
   }
 
   draw() {

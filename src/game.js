@@ -77,8 +77,6 @@ class Game {
         return;
       }
     }
-
-    this.players[0].moveTo(mouseX, mouseY);
   }
 
   handleMouseHover() {
