@@ -2,21 +2,26 @@ class MoveableGameObject extends GameObject {
   constructor(pos, vel) {
     super(pos);
 
-    this.vel = vel || createVector(1.0, 1.0);
+    this.maxVel = 3;
+    this.dest = null;
   }
 
   moveTo(x, y) {
     this.dest = createVector(x, y);
-    console.log(`move command received`);
   }
 
   update() {
-    if (this.dest && this.pos.x != this.dest.x && this.pos.y != this.dest.y) {
-      this.pos.add(this.vel);
-    } else {
-      this.dest = null;
+    if (this.dest) {
+
+      let vel = p5.Vector.sub(this.dest, this.pos);
+      vel.limit(this.maxVel);
+
+      if (this.dest == this.pos)
+        this.dest = null;
+      else
+        this.pos.add(vel);
+
     }
 
-    console.log(this.dest, this.pos);
   }
 }

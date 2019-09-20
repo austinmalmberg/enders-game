@@ -61,6 +61,9 @@ class Game {
       const player = new Player(base.getCenter(), this.board, base.team);
       this.players.push(player);
     });
+
+    const testPlayer = new Player(createVector(200, 200), this.board, this.teams[0]);
+    this.players.push(testPlayer);
   }
 
   handleClick() {
@@ -77,6 +80,8 @@ class Game {
         return;
       }
     }
+
+    this.players[2].moveTo(mouseX, mouseY);
   }
 
   handleMouseHover() {
