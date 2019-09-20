@@ -2,7 +2,7 @@ class MoveableGameObject extends GameObject {
   constructor(pos, vel) {
     super(pos);
 
-    this.maxVel = 3;
+    this.maxVel = 6;
     this.dest = null;
   }
 

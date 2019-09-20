@@ -7,10 +7,13 @@
 
 let game, canvas;
 const dims = [ 960, 720 ];
+const FRAMERATE = 30;
 
 /* P5 FUNCTIONS */
 
 function setup() {
+
+  frameRate(FRAMERATE);
 
   game = new Game(dims);
 
