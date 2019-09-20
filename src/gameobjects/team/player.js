@@ -1,6 +1,6 @@
 class Player extends MoveableGameObject {
   constructor(pos, radius, team) {
-    super(pos, /* max velocity = */ 2);
+    super(pos, /* max velocity = */ 4);
 
     this.radius = radius;
     this.team = team;
@@ -14,7 +14,8 @@ class Player extends MoveableGameObject {
   }
 
   handleClick() {
-    this.moveTo(mouseX, mouseY);
+    if (!this.frozen)
+      this.moveTo(mouseX, mouseY);
   }
 
   draw() {

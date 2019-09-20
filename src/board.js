@@ -1,7 +1,7 @@
 class Board {
   constructor(game) {
-    this.rowCount = 36;
-    this.colCount = 48;
+    this.rowCount = 27;
+    this.colCount = 36;
 
     // the index at which to add a base
     this.baseCol = 4;

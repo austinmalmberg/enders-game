@@ -40,7 +40,7 @@ class Game {
 
     this.numTeams = 2;
 
-    this.starDensity = 0.15;
+    this.starDensity = 0.10;
 
     this.board = new Board(this);
 
@@ -74,6 +74,12 @@ class Game {
 
   update() {
     this.teams.forEach(team => team.update());
+
+    // const p1 = this.teams[0].players[0];
+    // const p2 = this.teams[1].players[0];
+    // const distance = RayMarch.signedDistToCircle(p1.pos, p2.pos, p2.radius);
+    //
+    // console.log(distance);
   }
 
   draw() {
