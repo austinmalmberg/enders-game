@@ -1,13 +1,13 @@
 /**
  * Takes a tilesize and position (vector)
- * Position is the top-left corner of the tile
+ * Position is the center of the tile
 */
 
 class AbstractTile extends GameObject {
-  constructor(tilesize, pos) {
-    super(pos);
+  constructor(board, pos) {
+    super(p5.Vector.add(pos, createVector(board.tilesize.w * 0.5, board.tilesize.h * 0.5)));
 
-    this.tilesize = tilesize;
+    this.board = board;
   }
 
   clicked() {
@@ -24,20 +24,20 @@ class AbstractTile extends GameObject {
   }
 
   getTopLeft() {
-    return createVector(this.pos.x, this.pos.y);
+    return createVector(this.pos.x - this.board.tilesize.w * 0.5, this.pos.y - this.board.tilesize.h * 0.5);
   }
 
   getTopRight() {
-    return createVector(this.pos.x + this.tilesize.w, this.pos.y);
+    return createVector(this.pos.x + this.board.tilesize.w * 0.5, this.pos.y - this.board.tilesize.h * 0.5);
   }
   getBottomLeft() {
-    return createVector(this.pos.x, this.pos.y + this.tilesize.h);
+    return createVector(this.pos.x - this.board.tilesize.w * 0.5, this.pos.y + this.board.tilesize.h * 0.5);
   }
   getBottomRight() {
-    return createVector(this.pos.x + this.tilesize.w, this.pos.y + this.tilesize.h);
+    return createVector(this.pos.x + this.board.tilesize.w * 0.5, this.pos.y + this.board.tilesize.h * 0.5);
   }
   getCenter() {
-    return createVector(this.pos.x + this.tilesize.w * 0.5, this.pos.y + this.tilesize.h * 0.5);
+    return createVector(this.pos.x, this.pos.y);
   }
 
   // abstract methods

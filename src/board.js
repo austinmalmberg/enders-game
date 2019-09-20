@@ -46,8 +46,9 @@ class Board {
       return Math.random() < this.game.starDensity;
     };
 
-    let team = 0;
-    let teams = this.game.getTeams();
+
+    let teamIndex = 0;
+    let teams = this.game.teams;
 
     // Immovable tiles are placed on edges as walls, and randomly throughout board aka "stars"
     for (let r = 0; r < this.rowCount; r++) {
@@ -57,9 +58,9 @@ class Board {
         let pos = createVector(c * this.tilesize.w, r * this.tilesize.h);
 
         if (isBaseCoord(r, c)) {
-          t = new BaseTile(this.tilesize, pos, teams[team++]);
+          t = new BaseTile(this, pos, teams[teamIndex++]);
         } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
-          t = new ImmovableTile(this.tilesize, pos);
+          t = new ImmovableTile(this, pos);
 
         if (t)
           this.tiles.push(t);

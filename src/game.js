@@ -38,15 +38,14 @@ class Game {
     this.w = w;
     this.h = h;
 
-    this.numTeams = 2;
     this.teamRGBs = [
-        [255, 0, 0],    // red
         [0, 0, 255],    // blue
-        [0, 255, 0],    // green
-        [255, 255, 0]   // yellow
+        [255, 0, 0]    // red
       ];
-    this.teams = this.teamRGBs.slice(0, this.numTeams).map((rgb, i) => new Team(i, rgb));
+    this.teams = this.teamRGBs.map((rgb, i) => new Team(i, rgb));
     this.membersPerTeam = 6;
+
+    console.log(this.teams);
 
     this.starDensity = 0.15;
 
@@ -54,34 +53,22 @@ class Game {
 
     this.players = [];
     this._initPlayers();
+
+    this.moveHandler = new MoveHandler(this.players);
   }
 
   _initPlayers() {
-    this.board.getBases().forEach(base => {
-      const player = new Player(base.getCenter(), this.board, base.team);
-      this.players.push(player);
-    });
+    const redBase = this.board.getBases()[0];
 
-    const testPlayer = new Player(createVector(200, 200), this.board, this.teams[0]);
-    this.players.push(testPlayer);
+    for (let i = 0; i < this.membersPerTeam; i++) {
+      const player = new Player(redBase.getSpawnLocation(), this.board, redBase.team);
+      this.players.push(player);
+    }
   }
 
   handleClick() {
-    for (let player of this.players) {
-      if (player.clicked()) {
-        player.handleClick();
-        return;
-      }
-    }
-
-    for (let tile of this.board.getTiles()) {
-      if (tile.clicked()) {
-        tile.handleClick();
-        return;
-      }
-    }
-
-    this.players[2].moveTo(mouseX, mouseY);
+    this.moveHandler.getActivePlayer().moveTo(mouseX, mouseY);
+    this.moveHandler.nextPlayer();
   }
 
   handleMouseHover() {
@@ -99,9 +86,5 @@ class Game {
 
     // team players
     this.players.forEach(player => player.draw());
-  }
-
-  getTeams() {
-    return this.teams;
   }
 }

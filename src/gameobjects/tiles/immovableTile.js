@@ -1,22 +1,21 @@
 class ImmovableTile extends AbstractTile {
-  constructor(tilesize, pos) {
-    super(tilesize, pos);
+  constructor(board, pos) {
+    super(board, pos);
   }
 
   handleClick() {
-    console.log(this);
+    /* DO NOTHING */
   }
 
   draw() {
 
     push();
 
-    rectMode(CENTER);
     fill(90);
     noStroke();
 
-    const center = this.getCenter();
-    rect(center.x, center.y, this.tilesize.w, this.tilesize.h);
+    rectMode(CENTER);
+    rect(this.pos.x, this.pos.y, this.board.tilesize.w, this.board.tilesize.h);
 
     pop();
   }

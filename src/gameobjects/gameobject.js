@@ -5,9 +5,7 @@ class GameObject {
 
   // overrideable functions
   clicked() {  }
-  handleClick() {
-    console.log(this);
-  }
+  handleClick() {  }
   handleMouseHover() {  }
   update() {  }
   draw() {  }
