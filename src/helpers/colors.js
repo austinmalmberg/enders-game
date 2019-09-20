@@ -12,8 +12,8 @@ class Colors {
       return colors;
 
     } else if (!Array.isArray(colors)) {
-      console.log(`Colors.getP5Notation does not current support ${typeof colors} arguments.`);
-      return undefined;
+      console.log(`Colors.getP5Notation does not currently support ${typeof colors} arguments.`);
+      return null;
 
     } else if (colors.length === 1) {
       return colors[0];
@@ -25,6 +25,7 @@ class Colors {
         return `rgba(${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]})`;
 
     }
-    return colors;
+    
+    return null;
   }
 }

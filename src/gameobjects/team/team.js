@@ -10,7 +10,7 @@ class Team {
 
     this.membersPerTeam = 1;
     this.players = [...Array(this.membersPerTeam).keys()].map(i =>
-      new Player(base.getSpawnLocation(), playerRadius, this)
+      new Player(base.getSpawnLocation(), playerRadius, this.rgb)
     );
 
     this.moveManager = new MoveManager(this.players);

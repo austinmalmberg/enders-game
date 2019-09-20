@@ -63,7 +63,7 @@ class Game {
     const activeTeam = this.moveManager.getActive();
     activeTeam.handleClick();
 
-    // change teams once every player has moved
+    // change teams after every player has moved
     if (activeTeam.moveManager.isFirst())
       this.moveManager.next();
   }
