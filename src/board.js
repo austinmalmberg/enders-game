@@ -1,17 +1,20 @@
 class Board {
   constructor(game) {
-    this.game = game;
-
     this.rowCount = 36;
     this.colCount = 48;
 
     // the index at which to add a base
     this.baseCol = 4;
 
+    this.h = game.h;
+    this.w = game.w;
+
     this.tilesize = {
-      h: game.h / this.rowCount,
-      w: game.w / this.colCount
+      h: this.h / this.rowCount,
+      w: this.w / this.colCount
     };
+
+    this.starDensity = game.starDensity;
 
     this.tiles = [];
     this._initTiles();
@@ -43,12 +46,8 @@ class Board {
     };
 
     const isRandomStar = () => {
-      return Math.random() < this.game.starDensity;
+      return Math.random() < this.starDensity;
     };
-
-
-    let teamIndex = 0;
-    let teams = this.game.teams;
 
     // Immovable tiles are placed on edges as walls, and randomly throughout board aka "stars"
     for (let r = 0; r < this.rowCount; r++) {
@@ -58,7 +57,7 @@ class Board {
         let pos = createVector(c * this.tilesize.w, r * this.tilesize.h);
 
         if (isBaseCoord(r, c)) {
-          t = new BaseTile(this, pos, teams[teamIndex++]);
+          t = new BaseTile(this, pos);
         } else if (isEdge(r, c) || !adjacentWall(r, c) && isRandomStar())
           t = new ImmovableTile(this, pos);
 

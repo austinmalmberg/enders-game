@@ -38,37 +38,34 @@ class Game {
     this.w = w;
     this.h = h;
 
-    this.teamRGBs = [
-        [0, 0, 255],    // blue
-        [255, 0, 0]    // red
-      ];
-    this.teams = this.teamRGBs.map((rgb, i) => new Team(i, rgb));
-    this.membersPerTeam = 6;
-
-    console.log(this.teams);
+    this.numTeams = 2;
 
     this.starDensity = 0.15;
 
     this.board = new Board(this);
 
-    this.players = [];
-    this._initPlayers();
+    this.teams = [];
 
-    this.moveHandler = new MoveHandler(this.players);
-  }
+    const bases = this.board.getBases();
+    const playerRadius = Math.min(...Object.values(this.board.tilesize)) * 0.6 * 0.5;
 
-  _initPlayers() {
-    const redBase = this.board.getBases()[0];
-
-    for (let i = 0; i < this.membersPerTeam; i++) {
-      const player = new Player(redBase.getSpawnLocation(), this.board, redBase.team);
-      this.players.push(player);
+    for (let i = 0; i < bases.length; i++) {
+      const base = bases[i];
+      const team = new Team(i, base, playerRadius);
+      base.setTeam(team);
+      this.teams.push(team);
     }
+
+    this.moveManager = new MoveManager(this.teams);
   }
 
   handleClick() {
-    this.moveHandler.getActivePlayer().moveTo(mouseX, mouseY);
-    this.moveHandler.nextPlayer();
+    const activeTeam = this.moveManager.getActive();
+    activeTeam.handleClick();
+
+    // change teams once every player has moved
+    if (activeTeam.moveManager.isFirst())
+      this.moveManager.next();
   }
 
   handleMouseHover() {
@@ -76,15 +73,13 @@ class Game {
   }
 
   update() {
-    this.players.forEach(player => player.update());
+    this.teams.forEach(team => team.update());
   }
 
   draw() {
     background(155);
 
     this.board.draw();
-
-    // team players
-    this.players.forEach(player => player.draw());
+    this.teams.forEach(team => team.draw());
   }
 }

@@ -1,8 +1,8 @@
 class Player extends MoveableGameObject {
-  constructor(pos, board, team) {
-    super(pos);
+  constructor(pos, radius, team) {
+    super(pos, /* max velocity = */ 2);
 
-    this.radius = Math.min(board.tilesize.w, board.tilesize.h) * 0.6 * 0.5;
+    this.radius = radius;
     this.team = team;
 
     this.frozen = false;
