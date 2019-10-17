@@ -18,7 +18,7 @@ function setup() {
 
   frameRate(FRAMERATE);
 
-  game = new Game(dims);
+  game = new Game();
 
   canvas = createCanvas(dims.w, dims.h);
   canvas.mousePressed(handleClick);
@@ -34,6 +34,8 @@ function draw() {
   game.update();
   game.draw();
 }
+
+/* MY FUNCTIONS */
 
 function handleClick() {
   game.handleClick();

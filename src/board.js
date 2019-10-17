@@ -8,9 +8,6 @@ class Board {
     // the index at which to add a base
     this.baseCol = 4;
 
-    this.w = game.w;
-    this.h = game.h;
-
     this.tilesize = game.tilesize;
 
     this.starDensity = game.starDensity;

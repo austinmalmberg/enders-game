@@ -34,10 +34,7 @@
 
 
 class Game {
-  constructor({w, h}) {
-    this.w = w;
-    this.h = h;
-
+  constructor() {
     this.starDensity = 0.10;
     this.tilesize = 30;
 
