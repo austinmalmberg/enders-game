@@ -14,26 +14,26 @@ class BaseTile extends AbstractTile {
     const boardWidth = this.board.w;
     const boardHeight = this.board.h;
 
-    const xOffset = this.tilesize.w;
-    const yOffset = this.tilesize.h;
+    const xOffset = this.tilesize;
+    const yOffset = this.tilesize;
 
     // base is on the top side of the board
-    if (this.pos.y <= this.tilesize.h) {
+    if (this.pos.y <= this.tilesize) {
       return createVector(this.pos.x, this.pos.y + yOffset);
     }
 
     // base is on the bottom of the board
-    if (this.pos.y >= boardHeight - this.tilesize.h) {
+    if (this.pos.y >= boardHeight - this.tilesize) {
       return createVector(this.pos.x, this.pos.y - yOffset);
     }
 
     // base is on the left side of the board
-    if (this.pos.x <= this.tilesize.w) {
+    if (this.pos.x <= this.tilesize) {
       return createVector(this.pos.x + xOffset, this.pos.y);
     }
 
     // base is on the right side of the board
-    if (this.pos.x >= boardWidth - this.tilesize.w) {
+    if (this.pos.x >= boardWidth - this.tilesize) {
       return createVector(this.pos.x - xOffset, this.pos.y);
     }
 
@@ -52,7 +52,7 @@ class BaseTile extends AbstractTile {
     stroke(c);
 
     rectMode(CENTER);
-    rect(this.pos.x, this.pos.y, this.board.tilesize.w, this.board.tilesize.h);
+    rect(this.pos.x, this.pos.y, this.tilesize, this.tilesize);
 
     pop();
   }

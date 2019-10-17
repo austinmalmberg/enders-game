@@ -8,7 +8,7 @@ class Player extends MoveableGameObject {
     this.frozen = false;
     this.frozenRGBa = [52, 128, 255, 0.6];
 
-    this.vision = new Vision(this.pos);
+    // this.vision = new Vision(this.pos);
   }
 
   clicked() {
@@ -23,16 +23,16 @@ class Player extends MoveableGameObject {
 
   update() {
 
-    if (this.vision)
-      this.vision.update();
+    // if (this.vision)
+    //   this.vision.update();
 
     super.update();
   }
 
   draw() {
 
-    if (this.vision)
-      this.vision.draw();
+    // if (this.vision)
+    //   this.vision.draw();
 
     push();
 

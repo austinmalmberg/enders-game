@@ -10,7 +10,6 @@ class Geometry {
     let t = ( (p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x) ) / denominator;
 
     if (0 <= t && t <= 1) {
-
       return {
         x: p1.x + ( t * (p2.x - p1.x) ),
         y: p1.y + ( t * (p2.y - p1.y) )

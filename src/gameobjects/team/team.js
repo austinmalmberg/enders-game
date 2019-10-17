@@ -13,14 +13,12 @@ class Team {
       new Player(base.getSpawnLocation(), playerRadius, this.rgb)
     );
 
-    this.moveManager = new MoveManager(this.players);
+    this.playerManager = new MoveManager(this.players);
   }
 
   handleClick() {
-    const activePlayer = this.moveManager.getActive();
-    activePlayer.handleClick();
-
-    this.moveManager.next();
+    this.activePlayer().handleClick();
+    this.playerManager.next();
   }
 
   update() {
@@ -29,5 +27,9 @@ class Team {
 
   draw() {
     this.players.forEach(player => player.draw());
+  }
+
+  getActivePlayer() {
+    return this.playerManager.getActive();
   }
 }

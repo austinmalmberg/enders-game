@@ -34,38 +34,39 @@
 
 
 class Game {
-  constructor([w, h]) {
+  constructor({w, h}) {
     this.w = w;
     this.h = h;
 
-    this.numTeams = 2;
-
     this.starDensity = 0.10;
+    this.tilesize = 30;
+
+    this.playerRadius = this.tilesize * 0.6 * 0.5;
+    this.numTeams = 2;
+    this.teams = [];
 
     this.board = new Board(this);
 
-    this.teams = [];
-
     const bases = this.board.getBases();
-    const playerRadius = Math.min(...Object.values(this.board.tilesize)) * 0.6 * 0.5;
-
     for (let i = 0; i < bases.length; i++) {
       const base = bases[i];
-      const team = new Team(i, base, playerRadius);
+      const team = new Team(i, base, this.playerRadius);
       base.setTeam(team);
       this.teams.push(team);
     }
 
-    this.moveManager = new MoveManager(this.teams);
+    this.teamManager = new MoveManager(this.teams);
   }
 
   handleClick() {
-    const activeTeam = this.moveManager.getActive();
-    activeTeam.handleClick();
+    const player = this.getActivePlayer();
+    const destVector = this._closestTileIntersect(player);
 
-    // change teams after every player has moved
-    if (activeTeam.moveManager.isFirst())
-      this.moveManager.next();
+    player.moveTo(destVector.x, destVector.y);
+
+    // change teams after every player has gone
+    if (this.getActiveTeam().playerManager.isFirst())
+      this.teamManager.next();
   }
 
   handleMouseHover() {
@@ -74,12 +75,6 @@ class Game {
 
   update() {
     this.teams.forEach(team => team.update());
-
-    // const p1 = this.teams[0].players[0];
-    // const p2 = this.teams[1].players[0];
-    // const distance = RayMarch.signedDistToCircle(p1.pos, p2.pos, p2.radius);
-    //
-    // console.log(distance);
   }
 
   draw() {
@@ -87,5 +82,61 @@ class Game {
 
     this.board.draw();
     this.teams.forEach(team => team.draw());
+
+    push();
+
+    stroke(120);
+
+    const player = this.getActivePlayer();
+    const destVector = this._closestTileIntersect(player);
+
+    if (destVector)
+      line(player.pos.x, player.pos.y, destVector.x, destVector.y);
+
+    pop();
+  }
+
+  _closestTileIntersect(player) {
+
+    const mVector = createVector(mouseX, mouseY);
+    const tileIntersects = this.board.tiles
+
+        // only consider tiles with a y pos on the same side of the player as mouseY
+        .filter(tile => {
+          let ySign = Math.sign(tile.pos.y - player.pos.y);
+          let xSign = Math.sign(tile.pos.x - player.pos.x);
+
+          return (ySign == 0 || ySign == Math.sign(mVector.y - player.pos.y)) &&
+              (xSign == 0 || xSign == Math.sign(mVector.x - player.pos.x))
+        })
+        .flatMap(tile => tile.findIntersects(player.pos, mVector))
+        .map(p => createVector(p.x, p.y));
+
+
+    if (tileIntersects.length == 0)
+      return null;
+
+    let closest = null;
+    for (let intersect of tileIntersects) {
+
+      const d = intersect.dist(player.pos);
+
+      if (!closest || d < closest.dist) {
+        closest = {
+          int: intersect,
+          dist: d
+        }
+      }
+    }
+
+    return closest.int;
+  }
+
+  getActiveTeam() {
+    return this.teamManager.getActive();
+  }
+
+  getActivePlayer() {
+    return this.getActiveTeam().getActivePlayer();
   }
 }

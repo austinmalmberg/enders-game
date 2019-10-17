@@ -5,10 +5,19 @@
 
 class AbstractTile extends GameObject {
   constructor(board, pos) {
-    super(p5.Vector.add(pos, createVector(board.tilesize.w * 0.5, board.tilesize.h * 0.5)));
+    super(pos);
 
     this.board = board;
+    this.playerRadius = board.playerRadius;
+    this.rOffset = board.playerRadius * 0.5 * Math.sqrt(2);
+
     this.tilesize = board.tilesize;
+    this.borders = [
+      this.borderLeft(),
+      this.borderRight(),
+      this.borderTop(),
+      this.borderBottom()
+    ];
   }
 
   clicked() {
@@ -24,21 +33,89 @@ class AbstractTile extends GameObject {
     return true;
   }
 
+  // borders that the player can intersect wtih
+
+  borderLeft() {
+
+    return {
+      start: {
+        x: this.pos.x - (this.tilesize * 0.5 + this.playerRadius),
+        y: this.pos.y - (this.tilesize * 0.5 + this.rOffset)
+      },
+      end: {
+        x: this.pos.x - (this.tilesize * 0.5 + this.playerRadius),
+        y: this.pos.y + (this.tilesize * 0.5 + this.rOffset)
+      }
+    };
+  }
+
+  borderRight() {
+
+    return {
+      start: {
+        x: this.pos.x + (this.tilesize * 0.5 + this.playerRadius),
+        y: this.pos.y - (this.tilesize * 0.5 + this.rOffset)
+      },
+      end: {
+        x: this.pos.x + (this.tilesize * 0.5 + this.playerRadius),
+        y: this.pos.y + (this.tilesize * 0.5 + this.rOffset)
+      }
+    };
+  }
+
+  borderTop() {
+
+    return {
+      start: {
+        x: this.pos.x - (this.tilesize * 0.5 + this.rOffset),
+        y: this.pos.y - (this.tilesize * 0.5 + this.playerRadius)
+      },
+      end: {
+        x: this.pos.x + (this.tilesize * 0.5 + this.rOffset),
+        y: this.pos.y - (this.tilesize * 0.5 + this.playerRadius)
+      }
+    };
+  }
+
+  borderBottom() {
+
+    return {
+      start: {
+        x: this.pos.x - (this.tilesize * 0.5 + this.rOffset),
+        y: this.pos.y + (this.tilesize * 0.5 + this.playerRadius)
+      },
+      end: {
+        x: this.pos.x + (this.tilesize * 0.5 + this.rOffset),
+        y: this.pos.y + (this.tilesize * 0.5 + this.playerRadius)
+      }
+    };
+  }
+
   getTopLeft() {
-    return createVector(this.pos.x - this.tilesize.w * 0.5, this.pos.y - this.tilesize.h * 0.5);
+    return createVector(this.pos.x - this.tilesize * 0.5, this.pos.y - this.tilesize * 0.5);
   }
 
   getTopRight() {
-    return createVector(this.pos.x + this.tilesize.w * 0.5, this.pos.y - this.tilesize.h * 0.5);
+    return createVector(this.pos.x + this.tilesize * 0.5, this.pos.y - this.tilesize * 0.5);
   }
   getBottomLeft() {
-    return createVector(this.pos.x - this.tilesize.w * 0.5, this.pos.y + this.tilesize.h * 0.5);
+    return createVector(this.pos.x - this.tilesize * 0.5, this.pos.y + this.tilesize * 0.5);
   }
   getBottomRight() {
-    return createVector(this.pos.x + this.tilesize.w * 0.5, this.pos.y + this.tilesize.h * 0.5);
+    return createVector(this.pos.x + this.tilesize * 0.5, this.pos.y + this.tilesize * 0.5);
   }
   getCenter() {
     return createVector(this.pos.x, this.pos.y);
+  }
+
+
+
+  findIntersects(lineStart, lineEnd) {
+
+    return this.borders
+        .map(( {start, end} ) => Geometry.findIntersect(start, end, lineStart, lineEnd))
+        .filter(intersect => intersect != null);
+
   }
 
   // abstract methods

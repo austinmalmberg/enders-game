@@ -1,22 +1,23 @@
 class Board {
   constructor(game) {
-    this.rowCount = 27;
-    this.colCount = 36;
+    this.scale = 8;
+
+    this.rowCount = this.scale * 3;
+    this.colCount = this.scale * 4;
 
     // the index at which to add a base
     this.baseCol = 4;
 
-    this.h = game.h;
     this.w = game.w;
+    this.h = game.h;
 
-    this.tilesize = {
-      h: this.h / this.rowCount,
-      w: this.w / this.colCount
-    };
+    this.tilesize = game.tilesize;
 
     this.starDensity = game.starDensity;
 
     this.tiles = [];
+    this.playerRadius = game.playerRadius;
+
     this._initTiles();
   }
 
@@ -49,12 +50,14 @@ class Board {
       return Math.random() < this.starDensity;
     };
 
+    const halfTile = createVector(this.tilesize * 0.5, this.tilesize * 0.5);
+
     // Immovable tiles are placed on edges as walls, and randomly throughout board aka "stars"
     for (let r = 0; r < this.rowCount; r++) {
       for (let c = 0; c < this.colCount; c++) {
 
+        const pos = createVector(c * this.tilesize, r * this.tilesize).add(halfTile);
         let t;
-        let pos = createVector(c * this.tilesize.w, r * this.tilesize.h);
 
         if (isBaseCoord(r, c)) {
           t = new BaseTile(this, pos);

@@ -15,7 +15,7 @@ class ImmovableTile extends AbstractTile {
     noStroke();
 
     rectMode(CENTER);
-    rect(this.pos.x, this.pos.y, this.tilesize.w, this.tilesize.h);
+    rect(this.pos.x, this.pos.y, this.tilesize, this.tilesize);
 
     pop();
   }
