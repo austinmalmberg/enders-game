@@ -17,6 +17,10 @@ class ImmovableTile extends AbstractTile {
     rectMode(CENTER);
     rect(this.pos.x, this.pos.y, this.tilesize, this.tilesize);
 
+    stroke(140);
+
+    this.borders.forEach(({start, end}) => line(start.x, start.y, end.x, end.y));
+
     pop();
   }
 }

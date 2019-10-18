@@ -36,6 +36,12 @@
 class Game {
   constructor() {
     this.starDensity = 0.10;
+
+    // board variables
+    this.w = 960;
+    this.h = 720;
+    this.rowCount = 24;
+    this.colCount = 32;
     this.tilesize = 30;
 
     this.playerRadius = this.tilesize * 0.6 * 0.5;
@@ -53,25 +59,32 @@ class Game {
     }
 
     this.teamManager = new MoveManager(this.teams);
+    this.moveIndicator = new MoveIndicator(this);
   }
 
   handleClick() {
-    const player = this.getActivePlayer();
-    const destVector = this._closestTileIntersect(player);
 
-    player.moveTo(destVector.x, destVector.y);
+    const dest = this.moveIndicator.getDestination();
+    if (dest) {
+      this.getActivePlayer().moveTo(dest);
+    }
 
-    // change teams after every player has gone
-    if (this.getActiveTeam().playerManager.isFirst())
+    this.getActiveTeam().nextPlayer();
+
+    // every player on the team has gone so we should change teams
+    if (this.getActiveTeam().isFirstPlayer())
       this.teamManager.next();
+
+    this.moveIndicator.setPlayer(this.getActivePlayer());
   }
 
   handleMouseHover() {
-
+    this.moveIndicator.handleMouseHover();
   }
 
   update() {
     this.teams.forEach(team => team.update());
+    this.moveIndicator.update();
   }
 
   draw() {
@@ -79,54 +92,7 @@ class Game {
 
     this.board.draw();
     this.teams.forEach(team => team.draw());
-
-    push();
-
-    stroke(120);
-
-    const player = this.getActivePlayer();
-    const destVector = this._closestTileIntersect(player);
-
-    if (destVector)
-      line(player.pos.x, player.pos.y, destVector.x, destVector.y);
-
-    pop();
-  }
-
-  _closestTileIntersect(player) {
-
-    const mVector = createVector(mouseX, mouseY);
-    const tileIntersects = this.board.tiles
-
-        // only consider tiles with a y pos on the same side of the player as mouseY
-        .filter(tile => {
-          let ySign = Math.sign(tile.pos.y - player.pos.y);
-          let xSign = Math.sign(tile.pos.x - player.pos.x);
-
-          return (ySign == 0 || ySign == Math.sign(mVector.y - player.pos.y)) &&
-              (xSign == 0 || xSign == Math.sign(mVector.x - player.pos.x))
-        })
-        .flatMap(tile => tile.findIntersects(player.pos, mVector))
-        .map(p => createVector(p.x, p.y));
-
-
-    if (tileIntersects.length == 0)
-      return null;
-
-    let closest = null;
-    for (let intersect of tileIntersects) {
-
-      const d = intersect.dist(player.pos);
-
-      if (!closest || d < closest.dist) {
-        closest = {
-          int: intersect,
-          dist: d
-        }
-      }
-    }
-
-    return closest.int;
+    this.moveIndicator.draw();
   }
 
   getActiveTeam() {

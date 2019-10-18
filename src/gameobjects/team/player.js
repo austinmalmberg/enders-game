@@ -17,8 +17,6 @@ class Player extends MoveableGameObject {
 
   handleClick() {
 
-    if (!this.frozen)
-      this.moveTo(mouseX, mouseY);
   }
 
   update() {

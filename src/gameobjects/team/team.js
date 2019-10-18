@@ -32,4 +32,16 @@ class Team {
   getActivePlayer() {
     return this.playerManager.getActive();
   }
+
+  nextPlayer() {
+    this.playerManager.next();
+  }
+
+  isFirstPlayer() {
+    return this.playerManager.isFirst();
+  }
+
+  isLastPlayer() {
+    return this.playerManager.isLast();
+  }
 }

@@ -40,11 +40,11 @@ class AbstractTile extends GameObject {
     return {
       start: {
         x: this.pos.x - (this.tilesize * 0.5 + this.playerRadius),
-        y: this.pos.y - (this.tilesize * 0.5 + this.rOffset)
+        y: this.pos.y - (this.tilesize * 0.5 + this.playerRadius)
       },
       end: {
         x: this.pos.x - (this.tilesize * 0.5 + this.playerRadius),
-        y: this.pos.y + (this.tilesize * 0.5 + this.rOffset)
+        y: this.pos.y + (this.tilesize * 0.5 + this.playerRadius)
       }
     };
   }
@@ -54,11 +54,11 @@ class AbstractTile extends GameObject {
     return {
       start: {
         x: this.pos.x + (this.tilesize * 0.5 + this.playerRadius),
-        y: this.pos.y - (this.tilesize * 0.5 + this.rOffset)
+        y: this.pos.y - (this.tilesize * 0.5 + this.playerRadius)
       },
       end: {
         x: this.pos.x + (this.tilesize * 0.5 + this.playerRadius),
-        y: this.pos.y + (this.tilesize * 0.5 + this.rOffset)
+        y: this.pos.y + (this.tilesize * 0.5 + this.playerRadius)
       }
     };
   }
@@ -67,11 +67,11 @@ class AbstractTile extends GameObject {
 
     return {
       start: {
-        x: this.pos.x - (this.tilesize * 0.5 + this.rOffset),
+        x: this.pos.x - (this.tilesize * 0.5 + this.playerRadius),
         y: this.pos.y - (this.tilesize * 0.5 + this.playerRadius)
       },
       end: {
-        x: this.pos.x + (this.tilesize * 0.5 + this.rOffset),
+        x: this.pos.x + (this.tilesize * 0.5 + this.playerRadius),
         y: this.pos.y - (this.tilesize * 0.5 + this.playerRadius)
       }
     };
@@ -81,11 +81,11 @@ class AbstractTile extends GameObject {
 
     return {
       start: {
-        x: this.pos.x - (this.tilesize * 0.5 + this.rOffset),
+        x: this.pos.x - (this.tilesize * 0.5 + this.playerRadius),
         y: this.pos.y + (this.tilesize * 0.5 + this.playerRadius)
       },
       end: {
-        x: this.pos.x + (this.tilesize * 0.5 + this.rOffset),
+        x: this.pos.x + (this.tilesize * 0.5 + this.playerRadius),
         y: this.pos.y + (this.tilesize * 0.5 + this.playerRadius)
       }
     };
@@ -110,14 +110,17 @@ class AbstractTile extends GameObject {
 
 
 
-  findIntersects(lineStart, lineEnd) {
+  findIntersects(segStart, segEnd) {
 
     return this.borders
-        .map(( {start, end} ) => Geometry.findIntersect(start, end, lineStart, lineEnd))
+        .map(( {start, end} ) => Geometry.findIntersect(start, end, segStart, segEnd))
         .filter(intersect => intersect != null);
 
   }
 
-  // abstract methods
+  // overrideable functions
+  handleClick() {  }
+  handleMouseHover() {  }
+  update() {  }
   draw() {  }
 }

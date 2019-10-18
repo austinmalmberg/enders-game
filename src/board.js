@@ -1,12 +1,13 @@
 class Board {
   constructor(game) {
-    this.scale = 8;
 
-    this.rowCount = this.scale * 3;
-    this.colCount = this.scale * 4;
+    this.w = game.w;
+    this.h = game.h;
 
     // the index at which to add a base
     this.baseCol = 4;
+    this.rowCount = game.rowCount;
+    this.colCount = game.colCount;
 
     this.tilesize = game.tilesize;
 
@@ -40,7 +41,7 @@ class Board {
 
     const isBaseCoord = (r, c) => {
       return r == 0 && c == (this.colCount - 1) - this.baseCol ||
-        r == this.rowCount - 1 && c == this.baseCol;
+          r == this.rowCount - 1 && c == this.baseCol;
     };
 
     const isRandomStar = () => {
@@ -76,6 +77,6 @@ class Board {
   }
 
   getTiles() {
-    return this.tiles;
+    return this.tiles.filter(tile => tile instanceof ImmovableTile);
   }
 }

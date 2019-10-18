@@ -2,15 +2,23 @@ class MoveableGameObject extends GameObject {
   constructor(pos, maxVel) {
     super(pos);
 
-    this.maxVel = maxVel || 6;
+    this.setMaxVelocity(maxVel || 6);
     this.dest = null;
   }
 
   moveTo(x, y) {
-    this.dest = createVector(x, y);
+    if (!y)
+      this.dest = x;
+    else
+      this.dest = createVector(x, y);
+  }
+
+  setMaxVelocity(vel) {
+    this.maxVel = vel;
   }
 
   update() {
+
     if (this.dest) {
 
       let vel = p5.Vector.sub(this.dest, this.pos);
@@ -22,6 +30,11 @@ class MoveableGameObject extends GameObject {
         this.pos.add(vel);
 
     }
-
   }
+
+  // overrideable functions
+  clicked() {  }
+  handleClick() {  }
+  handleMouseHover() {  }
+  draw() {  }
 }
